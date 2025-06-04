@@ -3,6 +3,7 @@ namespace SpriteKind {
     export const laser = SpriteKind.create()
     export const bat = SpriteKind.create()
     export const skull = SpriteKind.create()
+    export const power = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, location) {
     mySprite2 = sprites.create(img`
@@ -75,7 +76,14 @@ sprites.onDestroyed(SpriteKind.skull, function (sprite) {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Player)
+        `, SpriteKind.power)
+    mySprite.startEffect(effects.warmRadial, 5000)
+    powerup1.ay = 100
+    powerup1.setPosition(skullenemy.x, skullenemy.x)
+    gattling = 1
+})
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    shoot()
 })
 function create_skull () {
     for (let value of tiles.getTilesByType(assets.tile`myTile8`)) {
@@ -115,6 +123,31 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.laser, function (sprite, otherSp
 })
 function move_up () {
     mySprite.vy = -130
+}
+function shoot () {
+    if (gattling == 1) {
+        Maxshoot = 100
+        bullet = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . f f . . . . . . . 
+            . . . . . . f f f f . . . . . . 
+            . . . . . f f f f f f . . . . . 
+            . . . . . f f f f f f . . . . . 
+            . . . . . . f f f f . . . . . . 
+            . . . . . . . f f . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, mySprite, 200, 0)
+    } else {
+    	
+    }
 }
 function create_bat () {
     for (let value of tiles.getTilesByType(assets.tile`myTile7`)) {
@@ -166,12 +199,18 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
         sprites.destroyAllSpritesOfKind(SpriteKind.warning)
     }
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.power, function (sprite, otherSprite) {
+	
+})
 let lasersprite: Sprite = null
 let batenemy: Sprite = null
+let bullet: Sprite = null
+let gattling = 0
 let skullenemy: Sprite = null
 let powerup1: Sprite = null
 let shot_1 = 0
 let mySprite2: Sprite = null
+let Maxshoot = 0
 let mySprite: Sprite = null
 mySprite = sprites.create(img`
     . . . . . . f f f f f f . . . . 
@@ -196,5 +235,6 @@ mySprite.setVelocity(75, 0)
 scene.cameraFollowSprite(mySprite)
 scene.setBackgroundColor(9)
 tiles.setCurrentTilemap(tilemap`level6`)
+Maxshoot = 3
 create_bat()
 create_skull()
