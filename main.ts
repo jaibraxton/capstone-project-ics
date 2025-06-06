@@ -4,6 +4,9 @@ namespace SpriteKind {
     export const bat = SpriteKind.create()
     export const skull = SpriteKind.create()
     export const power1 = SpriteKind.create()
+    export const dragon = SpriteKind.create()
+    export const power2 = SpriteKind.create()
+    export const shield = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.gameOver(false)
@@ -141,10 +144,37 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile9`, function (sprite, l
     lasersprite.setPosition(mySprite3.x, mySprite3.y)
     sprites.destroyAllSpritesOfKind(SpriteKind.warning)
 })
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.dragon, function (sprite, otherSprite) {
+    powerup2 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 8 8 . . . . . . . 
+        . . . . . . 9 1 1 9 . . . . . . 
+        . . . . . 8 1 1 1 1 8 . . . . . 
+        . . . . . 8 1 1 1 1 8 . . . . . 
+        . . . . . . 9 1 1 9 . . . . . . 
+        . . . . . . . 8 8 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.power2)
+    powerup2.ay = 50
+    powerup2.setPosition(dragonEnemy.x, dragonEnemy.y)
+    sprites.destroy(otherSprite)
+    sprites.destroy(sprite)
+})
 info.onCountdownEnd(function () {
     if (gattling == 1) {
         gattling = 0
         continousShoot = 0
+    } else if (shield == 1) {
+        sprites.destroyAllSpritesOfKind(SpriteKind.shield)
+        shield = 0
     }
 })
 function movedown () {
@@ -152,6 +182,10 @@ function movedown () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.laser, function (sprite, otherSprite) {
     game.gameOver(false)
+})
+sprites.onOverlap(SpriteKind.shield, SpriteKind.skull, function (sprite, otherSprite) {
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.power1, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -317,12 +351,77 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
     lasersprite.setPosition(mySprite2.x, mySprite2.y)
     sprites.destroyAllSpritesOfKind(SpriteKind.warning)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.power2, function (sprite, otherSprite) {
+    info.startCountdown(10)
+    playershield = sprites.create(img`
+        .......555555555.......
+        .....55ddddddddd55.....
+        ....5ddddddddddddd5....
+        ...5ddd.........ddd5...
+        ..5ddd...........ddd5..
+        .5ddd.............ddd5.
+        .5dd...............dd5.
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        5dd.................dd5
+        .5dd...............dd5.
+        .5ddd.............ddd5.
+        ..5ddd...........ddd5..
+        ...5ddd.........ddd5...
+        ....5ddddddddddddd5....
+        .....55ddddddddd55.....
+        .......555555555.......
+        `, SpriteKind.shield)
+    playershield.setPosition(mySprite.x, mySprite.y)
+    playershield.follow(mySprite, 500)
+    sprites.destroy(otherSprite)
+    shield = 1
+})
+sprites.onOverlap(SpriteKind.shield, SpriteKind.bat, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    sprites.destroy(sprite)
+})
+function create_dragon () {
+    for (let value of tiles.getTilesByType(assets.tile`myTile11`)) {
+        dragonEnemy = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . c c c c . . . . . . . . 
+            . . c c 5 5 5 5 c c . . . . . . 
+            . c 5 5 5 5 5 5 5 5 c . . . . . 
+            c 5 5 5 5 5 1 f 5 5 5 c . . . . 
+            c 5 5 5 5 5 f f 5 5 5 5 c . . . 
+            c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+            c c b b 1 b 5 5 5 5 5 5 d c . . 
+            c 5 3 3 3 5 5 5 5 5 d d d c . . 
+            . b 5 5 5 5 5 5 5 5 d d d c . . 
+            . . c b b c 5 5 b d d d d c c . 
+            . c b b c 5 5 b b d d d d c d c 
+            . c c c c c c d d d d d d d d c 
+            . . . c c c c d 5 5 b d d d c . 
+            . . c c c c c b 5 5 b c c c . . 
+            . . c b b b c d 5 5 b c . . . . 
+            `, SpriteKind.dragon)
+        tiles.placeOnTile(dragonEnemy, value)
+        tiles.setTileAt(value, assets.tile`transparency16`)
+        dragonEnemy.setVelocity(-20, 0)
+    }
+}
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     lasersshot += -1
 })
+let playershield: Sprite = null
 let powerup1: Sprite = null
 let batenemy: Sprite = null
 let laserblast: Sprite = null
+let shield = 0
+let dragonEnemy: Sprite = null
+let powerup2: Sprite = null
 let mySprite3: Sprite = null
 let lasersprite: Sprite = null
 let skullenemy: Sprite = null
@@ -358,6 +457,7 @@ Maxshoot = 1
 create_bat()
 create_skull()
 place_character()
+create_dragon()
 game.onUpdateInterval(100, function () {
     if (continousShoot == 1) {
         Maxshoot = 100
