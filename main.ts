@@ -60,8 +60,14 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, l
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     move_up()
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.skull, function (sprite, otherSprite) {
+    game.gameOver(false)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile6`, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.laser)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.bat, function (sprite, otherSprite) {
+    game.gameOver(false)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
     warning4 = sprites.create(img`
