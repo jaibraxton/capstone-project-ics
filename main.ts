@@ -262,7 +262,7 @@ function loadlevel (num: number) {
         place_character()
     } else if (num == 2) {
         tiles.setCurrentTilemap(tilemap`level3`)
-        scene.setBackgroundColor(7)
+        scene.setBackgroundColor(11)
         place_character()
     }
     for (let value of sprites.allOfKind(SpriteKind.skull)) {
