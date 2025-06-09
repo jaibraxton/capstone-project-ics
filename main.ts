@@ -249,6 +249,30 @@ function place_character () {
         tiles.placeOnTile(mySprite, value)
     }
 }
+function loadlevel (num: number) {
+    if (num == 1) {
+        tiles.setCurrentTilemap(tilemap`level6`)
+        scene.setBackgroundColor(9)
+        place_character()
+    } else if (num == 2) {
+        tiles.setCurrentTilemap(tilemap`level3`)
+        scene.setBackgroundColor(7)
+        place_character()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.skull)) {
+        sprites.destroy(value)
+    }
+    for (let value of sprites.allOfKind(SpriteKind.bat)) {
+        sprites.destroy(value)
+    }
+    create_bat()
+    create_skull()
+    create_dragon()
+}
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, location) {
+    currentLevel = 2
+    loadlevel(currentLevel)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile13`, function (sprite, location) {
     warning4 = sprites.create(img`
         . . . . . . . . 4 4 4 2 2 2 2 2 
@@ -895,6 +919,7 @@ let warning2: Sprite = null
 let warning3: Sprite = null
 let warning4: Sprite = null
 let mySprite2: Sprite = null
+let currentLevel = 0
 let Maxshoot = 0
 let mySprite: Sprite = null
 mySprite = sprites.create(img`
@@ -917,13 +942,9 @@ mySprite = sprites.create(img`
     `, SpriteKind.Player)
 mySprite.setVelocity(75, 0)
 scene.cameraFollowSprite(mySprite)
-scene.setBackgroundColor(9)
-tiles.setCurrentTilemap(tilemap`level6`)
 Maxshoot = 1
-create_bat()
-create_skull()
-place_character()
-create_dragon()
+currentLevel = 1
+loadlevel(currentLevel)
 game.onUpdateInterval(100, function () {
     if (continousShoot == 1) {
         Maxshoot = 100
