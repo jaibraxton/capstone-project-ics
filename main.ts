@@ -16,6 +16,10 @@ namespace SpriteKind {
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.gameOver(false)
 })
+sprites.onOverlap(SpriteKind.shield, SpriteKind.snake, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    sprites.destroy(sprite)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, location) {
     mySprite2 = sprites.create(img`
         ........44422222
@@ -73,6 +77,10 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile6`, function (sprite, l
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.bat, function (sprite, otherSprite) {
     game.gameOver(false)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.displacedown, function (sprite, otherSprite) {
+    sprite.setPosition(sprite.x, 90)
+    sprites.destroy(otherSprite)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
     warning4 = sprites.create(img`
@@ -1122,6 +1130,10 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.down, function (sprite, othe
 })
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     lasersshot += -1
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.displaceup, function (sprite, otherSprite) {
+    sprite.setPosition(sprite.x, 30)
+    sprites.destroy(otherSprite)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile14`, function (sprite, location) {
     lasersprite = sprites.create(img`
