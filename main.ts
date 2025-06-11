@@ -374,6 +374,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         shoot()
     } else if (gattling == 1) {
         continousShoot = 1
+        pierce = 1
     }
 })
 function create_skull () {
@@ -581,6 +582,7 @@ info.onCountdownEnd(function () {
     if (gattling == 1) {
         gattling = 0
         continousShoot = 0
+        pierce = 0
     } else if (shield == 1) {
         sprites.destroyAllSpritesOfKind(SpriteKind.shield)
         shield = 0
@@ -604,6 +606,7 @@ function move_up () {
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
     if (continousShoot == 1) {
         continousShoot = 0
+        pierce = 0
     }
 })
 function shoot () {
@@ -629,8 +632,12 @@ function shoot () {
     lasersshot += 1
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.bat, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite)
-    sprites.destroy(sprite)
+    if (pierce == 0) {
+        sprites.destroy(otherSprite)
+        sprites.destroy(sprite)
+    } else if (pierce == 1) {
+        sprites.destroy(otherSprite)
+    }
 })
 controller.up.onEvent(ControllerButtonEvent.Released, function () {
     stopmoving()
@@ -917,6 +924,7 @@ let lasersprite3: Sprite = null
 let lasersprite2: Sprite = null
 let lasersprite: Sprite = null
 let skullenemy: Sprite = null
+let pierce = 0
 let continousShoot = 0
 let gattling = 0
 let lasersshot = 0
