@@ -8,6 +8,10 @@ namespace SpriteKind {
     export const power2 = SpriteKind.create()
     export const shield = SpriteKind.create()
     export const snake = SpriteKind.create()
+    export const up = SpriteKind.create()
+    export const down = SpriteKind.create()
+    export const displacedown = SpriteKind.create()
+    export const displaceup = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.gameOver(false)
@@ -282,6 +286,8 @@ function loadlevel (num: number) {
     create_skull()
     create_dragon()
     create_snake()
+    create_upenemy()
+    create_downenemy()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, location) {
     currentLevel = 2
@@ -416,6 +422,30 @@ function create_skull () {
         tiles.placeOnTile(skullenemy, value)
         tiles.setTileAt(value, assets.tile`transparency16`)
         skullenemy.setVelocity(-20, 0)
+    }
+}
+function create_downenemy () {
+    for (let value of tiles.getTilesByType(assets.tile`myTile22`)) {
+        downenemy = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . 4 4 4 4 4 . . . . . . 
+            . . . 4 4 4 5 5 5 d 4 4 4 4 . . 
+            . . 4 d 5 d 5 5 5 d d d 4 4 . . 
+            . . 4 5 5 1 1 1 d d 5 5 5 4 . . 
+            . 4 5 5 5 1 1 1 5 1 1 5 5 4 4 . 
+            . 4 d d 1 1 5 5 5 1 1 5 5 d 4 . 
+            . 4 5 5 1 1 5 1 1 5 5 d d d 4 . 
+            . 2 5 5 5 d 1 1 1 5 1 1 5 5 2 . 
+            . 2 d 5 5 d 1 1 1 5 1 1 5 5 2 . 
+            . . 2 4 d d 5 5 5 5 d d 5 4 . . 
+            . . . 2 2 4 d 5 5 d d 4 4 . . . 
+            . . 2 2 2 2 2 4 4 4 2 2 2 . . . 
+            . . . 2 2 4 4 4 4 4 4 2 2 . . . 
+            . . . . . 2 2 2 2 2 2 . . . . . 
+            `, SpriteKind.down)
+        tiles.placeOnTile(downenemy, value)
+        tiles.setTileAt(value, assets.tile`transparency16`)
     }
 }
 controller.down.onEvent(ControllerButtonEvent.Released, function () {
@@ -562,6 +592,30 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile9`, function (sprite, l
     lasersprite.setPosition(mySprite3.x, mySprite3.y)
     sprites.destroyAllSpritesOfKind(SpriteKind.warning)
 })
+function create_upenemy () {
+    for (let value of tiles.getTilesByType(assets.tile`myTile23`)) {
+        upenemy = sprites.create(img`
+            . . . . . b b b b b b . . . . . 
+            . . . b b 9 9 9 9 9 9 b b . . . 
+            . . b b 9 9 9 9 9 9 9 9 b b . . 
+            . b b 9 d 9 9 9 9 9 9 9 9 b b . 
+            . b 9 d 9 9 9 9 9 1 1 1 9 9 b . 
+            b 9 d d 9 9 9 9 9 1 1 1 9 9 9 b 
+            b 9 d 9 9 9 9 9 9 1 1 1 9 9 9 b 
+            b 9 3 9 9 9 9 9 9 9 9 9 1 9 9 b 
+            b 5 3 d 9 9 9 9 9 9 9 9 9 9 9 b 
+            b 5 3 3 9 9 9 9 9 9 9 9 9 d 9 b 
+            b 5 d 3 3 9 9 9 9 9 9 9 d d 9 b 
+            . b 5 3 3 3 d 9 9 9 9 d d 5 b . 
+            . b d 5 3 3 3 3 3 3 3 d 5 b b . 
+            . . b d 5 d 3 3 3 3 5 5 b b . . 
+            . . . b b 5 5 5 5 5 5 b b . . . 
+            . . . . . b b b b b b . . . . . 
+            `, SpriteKind.up)
+        tiles.placeOnTile(upenemy, value)
+        tiles.setTileAt(value, assets.tile`transparency16`)
+    }
+}
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.dragon, function (sprite, otherSprite) {
     powerup2 = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -603,12 +657,8 @@ function movedown () {
     mySprite.vy = 75
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.snake, function (sprite, otherSprite) {
-    if (pierce == 0) {
-        sprites.destroy(otherSprite)
-        sprites.destroy(sprite)
-    } else if (pierce == 1) {
-        sprites.destroy(otherSprite)
-    }
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile21`, function (sprite, location) {
     lasersprite = sprites.create(img`
@@ -971,6 +1021,29 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.power2, function (sprite, otherS
     sprites.destroy(otherSprite)
     shield = 1
 })
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.up, function (sprite, otherSprite) {
+    teleport2 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 6 6 . . . . . . . 
+        . . . . . . 6 9 9 6 . . . . . . 
+        . . . . . . 8 9 9 8 . . . . . . 
+        . . . . . . . 8 8 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.displaceup)
+    teleport2.setPosition(otherSprite.x, otherSprite.y)
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
+})
 sprites.onOverlap(SpriteKind.shield, SpriteKind.bat, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
     sprites.destroy(sprite)
@@ -1024,6 +1097,29 @@ function create_dragon () {
         dragonEnemy.setVelocity(-20, 0)
     }
 }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.down, function (sprite, otherSprite) {
+    teleport1 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 4 4 . . . . . . . 
+        . . . . . . 4 5 5 4 . . . . . . 
+        . . . . . . 2 5 5 2 . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.displacedown)
+    teleport1.setPosition(otherSprite.x, otherSprite.y)
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
+})
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     lasersshot += -1
 })
@@ -1111,7 +1207,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile14`, function (sprite, 
     lasersprite4.setPosition(warning4.x, warning4.y)
     sprites.destroyAllSpritesOfKind(SpriteKind.warning)
 })
+let teleport1: Sprite = null
 let snakeenemy: Sprite = null
+let teleport2: Sprite = null
 let playershield: Sprite = null
 let powerup1: Sprite = null
 let batenemy: Sprite = null
@@ -1120,11 +1218,13 @@ let mySprite4: Sprite = null
 let shield = 0
 let dragonEnemy: Sprite = null
 let powerup2: Sprite = null
+let upenemy: Sprite = null
 let mySprite3: Sprite = null
 let lasersprite4: Sprite = null
 let lasersprite3: Sprite = null
 let lasersprite2: Sprite = null
 let lasersprite: Sprite = null
+let downenemy: Sprite = null
 let skullenemy: Sprite = null
 let pierce = 0
 let continousShoot = 0
