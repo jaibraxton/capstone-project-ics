@@ -301,6 +301,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, 
     currentLevel = 2
     loadlevel(currentLevel)
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile24`, function (sprite, location) {
+    game.gameOver(true)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile13`, function (sprite, location) {
     warning4 = sprites.create(img`
         . . . . . . . . 4 4 4 2 2 2 2 2 
@@ -1271,7 +1274,7 @@ mySprite = sprites.create(img`
 mySprite.setVelocity(75, 0)
 scene.cameraFollowSprite(mySprite)
 Maxshoot = 1
-currentLevel = 2
+currentLevel = 1
 loadlevel(currentLevel)
 game.onUpdateInterval(100, function () {
     if (continousShoot == 1) {
