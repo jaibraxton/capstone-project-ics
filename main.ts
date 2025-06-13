@@ -72,11 +72,17 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.skull, function (sprite, otherSprite) {
     game.gameOver(false)
 })
+sprites.onDestroyed(SpriteKind.dragon, function (sprite) {
+    info.changeScoreBy(1)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile6`, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.laser)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.bat, function (sprite, otherSprite) {
     game.gameOver(false)
+})
+sprites.onDestroyed(SpriteKind.skull, function (sprite) {
+    info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.displacedown, function (sprite, otherSprite) {
     sprite.setPosition(sprite.x, 90)
@@ -290,6 +296,15 @@ function loadlevel (num: number) {
     for (let value of sprites.allOfKind(SpriteKind.dragon)) {
         sprites.destroy(value)
     }
+    for (let value of sprites.allOfKind(SpriteKind.power1)) {
+        sprites.destroy(value)
+    }
+    for (let value of sprites.allOfKind(SpriteKind.power2)) {
+        sprites.destroy(value)
+    }
+    for (let value of sprites.allOfKind(SpriteKind.shield)) {
+        sprites.destroy(value)
+    }
     create_bat()
     create_skull()
     create_dragon()
@@ -303,6 +318,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile15`, function (sprite, 
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile24`, function (sprite, location) {
     game.gameOver(true)
+})
+sprites.onDestroyed(SpriteKind.snake, function (sprite) {
+    info.changeScoreBy(1)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile13`, function (sprite, location) {
     warning4 = sprites.create(img`
@@ -660,8 +678,8 @@ info.onCountdownEnd(function () {
         continousShoot = 0
         pierce = 0
     } else if (shield == 1) {
-        sprites.destroyAllSpritesOfKind(SpriteKind.shield)
         shield = 0
+        sprites.destroyAllSpritesOfKind(SpriteKind.shield)
     }
 })
 function movedown () {
@@ -1138,6 +1156,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.displaceup, function (sprite, ot
     sprite.setPosition(sprite.x, 30)
     sprites.destroy(otherSprite)
 })
+sprites.onDestroyed(SpriteKind.bat, function (sprite) {
+    info.changeScoreBy(1)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile14`, function (sprite, location) {
     lasersprite = sprites.create(img`
         2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
@@ -1276,6 +1297,92 @@ scene.cameraFollowSprite(mySprite)
 Maxshoot = 1
 currentLevel = 1
 loadlevel(currentLevel)
+characterAnimations.loopFrames(
+mySprite,
+[img`
+    . . . . . . f f f f f f . . . . 
+    . . . . f f e e e e f 2 f . . . 
+    . . . f f e e e e f 2 2 2 f . . 
+    . . . f e e e f f e e e e f . . 
+    . . . f f f f e e 2 2 2 2 e f . 
+    . . . f e 2 2 2 f f f f e 2 f . 
+    . . f f f f f f f e e e f f f . 
+    . . f f e 4 4 e b f 4 4 e e f . 
+    . . f e e 4 d 4 1 f d d e f . . 
+    . . . f e e e 4 d d d d f . . . 
+    . . . . f f e e 4 4 4 e f . . . 
+    . . . f f 4 d d e 2 2 2 f . . . 
+    . . . f f e d d e 2 2 2 f . . . 
+    . . . f f f e e f 4 5 5 f . . . 
+    . . . 2 2 2 f f f f f f . . . . 
+    . . . 4 4 4 . f f f . . . . . . 
+    `,img`
+    . . . . . . f f f f f f . . . . 
+    . . . . f f e e e e f 2 f . . . 
+    . . . f f e e e e f 2 2 2 f . . 
+    . . . f e e e f f e e e e f . . 
+    . . . f f f f e e 2 2 2 2 e f . 
+    . . . f e 2 2 2 f f f f e 2 f . 
+    . . f f f f f f f e e e f f f . 
+    . . f f e 4 4 e b f 4 4 e e f . 
+    . . f e e 4 d 4 1 f d d e f . . 
+    . . . f e e e 4 d d d d f . . . 
+    . . . . f f e e 4 4 4 e f . . . 
+    . . . f f 4 d d e 2 2 2 f . . . 
+    . . . f f e d d e 2 2 2 f . . . 
+    . . . f f f e e f 4 5 5 f . . . 
+    . . . 2 2 2 f f f f f f . . . . 
+    . . . . . . . f f f . . . . . . 
+    `],
+100,
+characterAnimations.rule(Predicate.MovingUp)
+)
+characterAnimations.loopFrames(
+mySprite,
+[img`
+    . . . . . . f f f f f f . . . . 
+    . . . . f f e e e e f 2 f . . . 
+    . . . f f e e e e f 2 2 2 f . . 
+    . . . f e e e f f e e e e f . . 
+    . . . f f f f e e 2 2 2 2 e f . 
+    . . . f e 2 2 2 f f f f e 2 f . 
+    . . f f f f f f f e e e f f f . 
+    . . f f e 4 4 e b f 4 4 e e f . 
+    . . f e e 4 d 4 1 f d d e f . . 
+    . . . f e e e 4 d d d d f . . . 
+    . . . . f f e e 4 4 4 e f . . . 
+    . . . f f 4 d d e 2 2 2 f . . . 
+    . . . f f e d d e 2 2 2 f . . . 
+    . . . f f f e e f 4 5 5 f . . . 
+    . . . . . . f f f f f f . . . . 
+    . . . . . . . f f f . . . . . . 
+    `],
+500,
+characterAnimations.rule(Predicate.MovingDown)
+)
+characterAnimations.loopFrames(
+mySprite,
+[img`
+    . . . . . . f f f f f f . . . . 
+    . . . . f f e e e e f 2 f . . . 
+    . . . f f e e e e f 2 2 2 f . . 
+    . . . f e e e f f e e e e f . . 
+    . . . f f f f e e 2 2 2 2 e f . 
+    . . . f e 2 2 2 f f f f e 2 f . 
+    . . f f f f f f f e e e f f f . 
+    . . f f e 4 4 e b f 4 4 e e f . 
+    . . f e e 4 d 4 1 f d d e f . . 
+    . . . f e e e 4 d d d d f . . . 
+    . . . . f f e e 4 4 4 e f . . . 
+    . . . f f 4 d d e 2 2 2 f . . . 
+    . . . f f e d d e 2 2 2 f . . . 
+    . . . f f f e e f 4 5 5 f . . . 
+    . . . 2 2 2 f f f f f f . . . . 
+    . . . 4 4 4 . f f f . . . . . . 
+    `],
+500,
+characterAnimations.rule(Predicate.NotMoving)
+)
 game.onUpdateInterval(100, function () {
     if (continousShoot == 1) {
         Maxshoot = 100
